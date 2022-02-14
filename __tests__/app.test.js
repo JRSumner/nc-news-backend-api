@@ -18,7 +18,6 @@ describe("GET: /api/topics", () => {
       .expect(200)
       .then((response) => {
         const topicsArray = response.body.topics;
-        console.log(topicsArray);
         expect(topicsArray.length).toBe(3);
 
         topicsArray.forEach((topic) => {
