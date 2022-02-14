@@ -3,6 +3,7 @@ const app = require("../db/app.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
+const { response } = require("../db/app.js");
 
 afterAll(() => {
   return db.end();
@@ -27,12 +28,18 @@ describe("GET: /api/topics", () => {
               description: expect.any(String),
             })
           );
-        });
 
-        topicsArray.forEach((topic) => {
           expect(topic.hasOwnProperty("slug")).toEqual(true);
           expect(topic.hasOwnProperty("description")).toEqual(true);
         });
+      });
+  });
+  test("status 404: responds with a path not found message", () => {
+    return request(app)
+      .get("/api/invalid-path")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toEqual("path not found");
       });
   });
 });
