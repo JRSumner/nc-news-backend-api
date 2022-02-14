@@ -19,6 +19,12 @@ describe("GET: /api/topics", () => {
         const topicsArray = response.body.topics;
         console.log(topicsArray);
         expect(topicsArray.length).toBe(3);
+        topicsArray.forEach((topic) => {
+          expect.objectContaining({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
       });
   });
 });
