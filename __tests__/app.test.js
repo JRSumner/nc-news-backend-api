@@ -27,9 +27,6 @@ describe("GET: /api/topics", () => {
               description: expect.any(String),
             })
           );
-
-          expect(topic.hasOwnProperty("slug")).toEqual(true);
-          expect(topic.hasOwnProperty("description")).toEqual(true);
         });
       });
   });
