@@ -1,11 +1,15 @@
 const express = require("express");
+const { getArticles } = require("./controllers/articles.controller");
 const { getTopics } = require("./controllers/topics.controller");
+const { handlesBadPath, handlesCustomErrors } = require("./error");
 const app = express();
 
 app.get("/api/topics", getTopics);
 
-app.all("/*", (req, res) => {
-  res.status(404).send({ message: "path not found" });
-});
+app.get("/api/articles/:article_id", getArticles);
+
+app.all("/*", handlesBadPath);
+
+app.use(handlesCustomErrors);
 
 module.exports = app;
