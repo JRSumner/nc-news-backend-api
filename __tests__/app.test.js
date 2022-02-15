@@ -79,3 +79,46 @@ describe("GET: /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("PATCH: /api/articles/:article_id", () => {
+  test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a positive number of votes", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/articles/5")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({ inc_votes: 1 });
+      });
+  });
+  test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a negative number of votes", () => {
+    const numOfVotes = { votes: -100 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({ inc_votes: -100 });
+      });
+  });
+  test("status 400: when passed invalid votes data type, responds with 'bad request'", () => {
+    const numOfVotes = { votes: "hello" };
+    return request(app)
+      .patch("/api/articles/8")
+      .send(numOfVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("status 400: when passed an empty object, responds with 'bad request'", () => {
+    const numOfVotes = {};
+    return request(app)
+      .patch("/api/articles/4")
+      .send(numOfVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+});
