@@ -3,7 +3,7 @@ const app = require("../db/app.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
-const { response } = require("../db/app.js");
+const { response, resource } = require("../db/app.js");
 
 afterAll(() => {
   return db.end();
@@ -57,6 +57,14 @@ describe("GET /api/articles/:article_id", () => {
             votes: expect.any(Number),
           })
         );
+      });
+  });
+  test("status 404: valid but non-existent id, responds with 'no article matching that id'", () => {
+    return request(app)
+      .get("/api/articles/1337")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual("no article matching that id");
       });
   });
 });
