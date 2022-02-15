@@ -1,7 +1,7 @@
 const db = require("../connection.js");
 
 exports.fetchArticles = (id) => {
-  if (isNaN(id)) return Promise.reject({ status: 404, msg: "bad request" });
+  if (isNaN(id)) return Promise.reject({ status: 400, msg: "bad request" });
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1`, [id])
     .then((response) => {

@@ -67,10 +67,10 @@ describe("GET /api/articles/:article_id", () => {
         expect(response.body.msg).toEqual("no article matching that id");
       });
   });
-  test("status 404: when passed invalid id, responds with 'bad request'", () => {
+  test("status 400: when passed invalid id, responds with 'bad request'", () => {
     return request(app)
       .get("/api/articles/invalid-id")
-      .expect(404)
+      .expect(400)
       .then((response) => {
         expect(response.body.msg).toEqual("bad request");
       });
