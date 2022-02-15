@@ -1,5 +1,5 @@
-const { fetchArticles } = require("../models/articles.model.js");
-
+const fetchArticles = require("../models/articles.model.js");
+console.log(fetchArticles, "<<<");
 exports.getArticles = (req, res) => {
   const id = req.params.article_id;
   fetchArticles(id)

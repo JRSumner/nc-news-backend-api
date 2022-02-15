@@ -46,7 +46,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((response) => {
-        console.log(response.body.articles, "in test");
         expect(response.body.articles).toEqual(
           expect.objectContaining({
             article_id: expect.any(Number),
