@@ -11,6 +11,17 @@ afterAll(() => {
 
 beforeEach(() => seed(data));
 
+describe("Global tests", () => {
+  test("status 404: responds with a path not found message", () => {
+    return request(app)
+      .get("/api/invalid-path")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.message).toEqual("path not found");
+      });
+  });
+});
+
 describe("GET: /api/topics", () => {
   test("status 200: responds with an array of topic objects, each of which should have the following properties 'slug' & 'description' ", () => {
     return request(app)
@@ -30,17 +41,9 @@ describe("GET: /api/topics", () => {
         });
       });
   });
-  test("status 404: responds with a path not found message", () => {
-    return request(app)
-      .get("/api/invalid-path")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.message).toEqual("path not found");
-      });
-  });
 });
 
-describe("GET /api/articles/:article_id", () => {
+describe("GET: /api/articles/:article_id", () => {
   test("status 200: responds with an articles object with the following properties author (which is username), title, article_id, body, topic, created_at and votes", () => {
     return request(app)
       .get("/api/articles/1")
