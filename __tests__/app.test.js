@@ -59,12 +59,20 @@ describe("GET /api/articles/:article_id", () => {
         );
       });
   });
-  test("status 404: valid but non-existent id, responds with 'no article matching that id'", () => {
+  test("status 404: when passed valid but non-existent id, responds with 'no article matching that id'", () => {
     return request(app)
       .get("/api/articles/1337")
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toEqual("no article matching that id");
+      });
+  });
+  test("status 404: when passed invalid id, responds with 'bad request'", () => {
+    return request(app)
+      .get("/api/articles/invalid-id")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual("bad request");
       });
   });
 });
