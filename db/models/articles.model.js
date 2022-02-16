@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const { fallback_application_name } = require("pg/lib/defaults");
 const db = require("../connection.js");
 
@@ -28,7 +29,14 @@ exports.updateVotes = (votes, id) => {
       [votes, id]
     )
     .then((response) => {
-      const result = { inc_votes: response.rows[0].votes };
+      console.log(response.rows.length, "in model");
+      if (response.rows.length === 0)
+        return Promise.reject({
+          status: 404,
+          msg: "no article matching that id",
+        });
+      const result = response.rows[0];
+      console.log(result);
       return result;
     });
 };
