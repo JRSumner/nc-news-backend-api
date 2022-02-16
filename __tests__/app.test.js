@@ -12,13 +12,27 @@ afterAll(() => {
 beforeEach(() => seed(data));
 
 describe("Global tests", () => {
-  test("status 404: responds with a path not found message", () => {
-    return request(app)
-      .get("/api/invalid-path")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.message).toEqual("path not found");
+  describe("GET requests", () => {
+    test("status 404: responds with a path not found message", () => {
+      return request(app)
+        .get("/*")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.message).toEqual("path not found");
+        });
+    });
+    describe("PATCH requests", () => {
+      test("status 404: responds with a path not found message", () => {
+        const data = { votes: 1 };
+        return request(app)
+          .patch("/*")
+          .expect(404)
+          .send(data)
+          .then((response) => {
+            expect(response.body.message).toEqual("path not found");
+          });
       });
+    });
   });
 });
 
@@ -119,6 +133,25 @@ describe("PATCH: /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toEqual("bad request");
+      });
+  });
+});
+
+describe("GET: /api/users", () => {
+  test("status 200: response with an array of object, each object should have a 'username' property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: users }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
