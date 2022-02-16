@@ -102,7 +102,15 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send(numOfVotes)
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({ inc_votes: 1 });
+        expect(body).toEqual({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 1,
+        });
       });
   });
   test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a negative number of votes", () => {
@@ -112,7 +120,15 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send(numOfVotes)
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({ inc_votes: -100 });
+        expect(body).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: -100,
+        });
       });
   });
   test("status 400: when passed invalid votes data type, responds with 'bad request'", () => {
@@ -133,6 +149,17 @@ describe("PATCH: /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("status 404: when passed valid but non-existent id, responds with 'no article matching that id'", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/articles/1337")
+      .send(numOfVotes)
+      .expect(404)
+      .then((response) => {
+        console.log("in test");
+        expect(response.body.msg).toEqual("no article matching that id");
       });
   });
 });
