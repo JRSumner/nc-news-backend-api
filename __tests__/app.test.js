@@ -158,7 +158,6 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send(numOfVotes)
       .expect(404)
       .then((response) => {
-        console.log("in test");
         expect(response.body.msg).toEqual("no article matching that id");
       });
   });
