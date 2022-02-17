@@ -187,19 +187,40 @@ describe("GET: /api/users", () => {
 describe("GET: /api/articles", () => {
   test("status 200: responds with an array of article objects", () => {
     return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: articles }) => {
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("status 200: responds with an array of article objects sorted by the query", () => {
+    return request(app)
       .get("/api/articles?sort_by=created_at")
       .expect(200)
       .then(({ body: articles }) => {
-        expect(articles[0]).toEqual(
-          expect.objectContaining({
-            article_id: expect.any(Number),
-            title: expect.any(String),
-            topic: expect.any(String),
-            author: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-          })
-        );
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
       });
   });
   test("status 400: when passed invalid sort_by, responds with 'bad request'", () => {
