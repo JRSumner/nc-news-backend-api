@@ -45,7 +45,6 @@ exports.fetchArticles = (sort_by) => {
   }
 
   if (sort_by === undefined) {
-    console.log("undefined conditional");
     return db
       .query(
         `SELECT article_id, title, topic, author, created_at, votes FROM articles;`
