@@ -2,7 +2,7 @@ const res = require("express/lib/response");
 const { fallback_application_name } = require("pg/lib/defaults");
 const db = require("../connection.js");
 
-exports.fetchArticles = (id) => {
+exports.fetchArticlesById = (id) => {
   if (isNaN(id)) return Promise.reject({ status: 400, msg: "bad request" });
 
   return db
