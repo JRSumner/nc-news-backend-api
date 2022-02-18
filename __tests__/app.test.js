@@ -102,15 +102,16 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send(numOfVotes)
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({
-          article_id: 5,
-          title: "UNCOVERED: catspiracy to bring down democracy",
-          topic: "cats",
-          author: "rogersop",
-          body: "Bastet walks amongst us, and the cats are taking arms!",
-          created_at: "2020-08-03T13:14:00.000Z",
-          votes: 1,
-        });
+        expect(body).toEqual(
+          expect.objectContaining({
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 1,
+          })
+        );
       });
   });
   test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a negative number of votes", () => {
@@ -120,15 +121,16 @@ describe("PATCH: /api/articles/:article_id", () => {
       .send(numOfVotes)
       .expect(200)
       .then(({ body }) => {
-        expect(body).toEqual({
-          article_id: 3,
-          title: "Eight pug gifs that remind me of mitch",
-          topic: "mitch",
-          author: "icellusedkars",
-          body: "some gifs",
-          created_at: "2020-11-03T09:12:00.000Z",
-          votes: -100,
-        });
+        expect(body).toEqual(
+          expect.objectContaining({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: -100,
+          })
+        );
       });
   });
   test("status 400: when passed invalid votes data type, responds with 'bad request'", () => {
@@ -178,6 +180,55 @@ describe("GET: /api/users", () => {
             })
           );
         });
+      });
+  });
+});
+
+describe("GET: /api/articles", () => {
+  test("status 200: responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: articles }) => {
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("status 200: responds with an array of article objects sorted by the query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then(({ body: articles }) => {
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("status 400: when passed invalid sort_by, responds with 'bad request'", () => {
+    return request(app)
+      .get("/api/articles/?sort_by=INVALID_REQUEST")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("bad request");
       });
   });
 });

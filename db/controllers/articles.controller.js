@@ -1,10 +1,12 @@
-const { response } = require("../app.js");
-const { updateVotes } = require("../models/articles.model.js");
-const { fetchArticlesById } = require("../models/articles.model.js");
+const {
+  updateVotes,
+  fetchArticles,
+  fetchArticleById,
+} = require("../models/articles.model.js");
 
-exports.getArticlesById = (req, res, next) => {
+exports.getArticleById = (req, res, next) => {
   const id = req.params.article_id;
-  fetchArticlesById(id)
+  fetchArticleById(id)
     .then((article) => {
       res.status(200).send(article);
     })
@@ -17,6 +19,17 @@ exports.patchVotes = (req, res, next) => {
   const votes = req.body.votes;
   const id = req.params.article_id;
   updateVotes(votes, id)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getArticles = (req, res, next) => {
+  const sort_by = req.query.sort_by;
+  fetchArticles(sort_by)
     .then((response) => {
       res.status(200).send(response);
     })

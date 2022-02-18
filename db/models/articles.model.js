@@ -1,8 +1,6 @@
-const res = require("express/lib/response");
-const { fallback_application_name } = require("pg/lib/defaults");
 const db = require("../connection.js");
 
-exports.fetchArticlesById = (id) => {
+exports.fetchArticleById = (id) => {
   if (isNaN(id)) return Promise.reject({ status: 400, msg: "bad request" });
 
   return db
@@ -37,4 +35,36 @@ exports.updateVotes = (votes, id) => {
       const result = response.rows[0];
       return result;
     });
+};
+
+exports.fetchArticles = (sort_by) => {
+  const validSortBys = ["created_at"];
+
+  if (!validSortBys.includes(sort_by) && sort_by !== undefined) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+
+  if (sort_by === undefined) {
+    return db
+      .query(
+        `SELECT article_id, title, topic, author, created_at, votes FROM articles;`
+      )
+      .then((response) => {
+        return response.rows;
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    return db
+      .query(
+        `SELECT article_id, title, topic, author, created_at, votes FROM articles ORDER BY ${sort_by} ASC;`
+      )
+      .then((response) => {
+        return response.rows;
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 };
