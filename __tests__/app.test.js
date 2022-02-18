@@ -12,13 +12,27 @@ afterAll(() => {
 beforeEach(() => seed(data));
 
 describe("Global tests", () => {
-  test("status 404: responds with a path not found message", () => {
-    return request(app)
-      .get("/api/invalid-path")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.message).toEqual("path not found");
+  describe("GET requests", () => {
+    test("status 404: responds with a path not found message", () => {
+      return request(app)
+        .get("/*")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.message).toEqual("path not found");
+        });
+    });
+    describe("PATCH requests", () => {
+      test("status 404: responds with a path not found message", () => {
+        const data = { votes: 1 };
+        return request(app)
+          .patch("/*")
+          .expect(404)
+          .send(data)
+          .then((response) => {
+            expect(response.body.message).toEqual("path not found");
+          });
       });
+    });
   });
 });
 
@@ -76,6 +90,94 @@ describe("GET: /api/articles/:article_id", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toEqual("bad request");
+      });
+  });
+});
+
+describe("PATCH: /api/articles/:article_id", () => {
+  test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a positive number of votes", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/articles/5")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          article_id: 5,
+          title: "UNCOVERED: catspiracy to bring down democracy",
+          topic: "cats",
+          author: "rogersop",
+          body: "Bastet walks amongst us, and the cats are taking arms!",
+          created_at: "2020-08-03T13:14:00.000Z",
+          votes: 1,
+        });
+      });
+  });
+  test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a negative number of votes", () => {
+    const numOfVotes = { votes: -100 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: -100,
+        });
+      });
+  });
+  test("status 400: when passed invalid votes data type, responds with 'bad request'", () => {
+    const numOfVotes = { votes: "hello" };
+    return request(app)
+      .patch("/api/articles/8")
+      .send(numOfVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("status 400: when passed an empty object, responds with 'bad request'", () => {
+    const numOfVotes = {};
+    return request(app)
+      .patch("/api/articles/4")
+      .send(numOfVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("bad request");
+      });
+  });
+  test("status 404: when passed valid but non-existent id, responds with 'no article matching that id'", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/articles/1337")
+      .send(numOfVotes)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual("no article matching that id");
+      });
+  });
+});
+
+describe("GET: /api/users", () => {
+  test("status 200: response with an array of object, each object should have a 'username' property", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: users }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
