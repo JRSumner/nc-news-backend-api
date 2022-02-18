@@ -64,7 +64,7 @@ exports.fetchArticles = (sort_by) => {
         return response.rows;
       })
       .catch((err) => {
-        console.log(err);
+        next(err);
       });
   }
 };

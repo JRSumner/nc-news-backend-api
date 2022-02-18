@@ -104,12 +104,12 @@ describe("PATCH: /api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(body).toEqual(
           expect.objectContaining({
-            article_id: expect.any(Number),
-            title: expect.any(String),
-            topic: expect.any(String),
-            author: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 1,
           })
         );
       });
@@ -123,11 +123,11 @@ describe("PATCH: /api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(body).toEqual(
           expect.objectContaining({
-            article_id: expect.any(Number),
-            title: expect.any(String),
-            topic: expect.any(String),
-            author: expect.any(String),
-            created_at: expect.any(String),
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            created_at: "2020-11-03T09:12:00.000Z",
             votes: -100,
           })
         );
