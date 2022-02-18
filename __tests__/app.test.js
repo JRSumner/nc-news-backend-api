@@ -92,6 +92,25 @@ describe("GET: /api/articles/:article_id", () => {
         expect(response.body.msg).toEqual("bad request");
       });
   });
+  test("status 200: responds with an article object which will include a 'comment_count' property", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toEqual(
+          expect.objectContaining({
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            body: "Bastet walks amongst us, and the cats are taking arms!",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 0,
+            comment_count: "2",
+          })
+        );
+      });
+  });
 });
 
 describe("PATCH: /api/articles/:article_id", () => {
