@@ -29,8 +29,9 @@ exports.patchVotes = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
+  const id = req.params.article_id;
   const sort_by = req.query.sort_by;
-  fetchArticles(sort_by)
+  fetchArticles(id, sort_by)
     .then((response) => {
       res.status(200).send(response);
     })

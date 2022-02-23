@@ -40,7 +40,7 @@ exports.updateVotes = (votes, id) => {
     });
 };
 
-exports.fetchArticles = (sort_by) => {
+exports.fetchArticles = (id, sort_by) => {
   const validSortBys = ["created_at"];
 
   if (!validSortBys.includes(sort_by) && sort_by !== undefined) {
@@ -50,7 +50,7 @@ exports.fetchArticles = (sort_by) => {
   if (sort_by === undefined) {
     return db
       .query(
-        `SELECT article_id, title, topic, author, created_at, votes FROM articles;`
+        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles;`
       )
       .then((response) => {
         return response.rows;
@@ -61,7 +61,7 @@ exports.fetchArticles = (sort_by) => {
   } else {
     return db
       .query(
-        `SELECT article_id, title, topic, author, created_at, votes FROM articles ORDER BY ${sort_by} ASC;`
+        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles ORDER BY ${sort_by} ASC;`
       )
       .then((response) => {
         return response.rows;

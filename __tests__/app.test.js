@@ -251,6 +251,26 @@ describe("GET: /api/articles", () => {
         expect(response.body.msg).toEqual("bad request");
       });
   });
+  test("status 200: response with an array of article objects which will include a 'comment_count' property", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: articles }) => {
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
+  });
 });
 
 describe("GET: /api/articles/:article_id/comments", () => {
