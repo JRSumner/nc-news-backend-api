@@ -4,7 +4,10 @@ exports.fetchArticleById = (id) => {
   if (isNaN(id)) return Promise.reject({ status: 400, msg: "bad request" });
 
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [id])
+    .query(
+      `SELECT author, title, article_id, body, topic, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles WHERE article_id = $1`,
+      [id]
+    )
     .then((response) => {
       const article = { articles: response.rows[0] };
       if (response.rows.length === 0)
