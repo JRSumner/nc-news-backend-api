@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
 const { response, resource } = require("../db/app.js");
+const res = require("express/lib/response");
 
 afterAll(() => {
   return db.end();
@@ -245,6 +246,54 @@ describe("GET: /api/articles", () => {
   test("status 400: when passed invalid sort_by, responds with 'bad request'", () => {
     return request(app)
       .get("/api/articles/?sort_by=INVALID_REQUEST")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toEqual("bad request");
+      });
+  });
+});
+
+describe("GET: /api/articles/:article_id/comments", () => {
+  test("Status 200: responds an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then(({ body: comments }) => {
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("Status 200: responds with an array of comment objects relating to the article_id provided", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: comments }) => {
+        comments.forEach((comment) => {
+          expect(comment.article_id).toEqual(1);
+        });
+      });
+  });
+  test("status 404: when passed valid but non-existent id, responds with 'no article matching that id'", () => {
+    return request(app)
+      .get("/api/articles/1337/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toEqual("no article matching that id");
+      });
+  });
+  test("status 400: when passed invalid id, responds with 'bad request'", () => {
+    return request(app)
+      .get("/api/articles/invalid-id/comments")
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toEqual("bad request");

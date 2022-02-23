@@ -2,6 +2,7 @@ const {
   updateVotes,
   fetchArticles,
   fetchArticleById,
+  fetchArticleComments,
 } = require("../models/articles.model.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -30,6 +31,17 @@ exports.patchVotes = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   const sort_by = req.query.sort_by;
   fetchArticles(sort_by)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getArticleComments = (req, res, next) => {
+  const id = req.params.article_id;
+  fetchArticleComments(id)
     .then((response) => {
       res.status(200).send(response);
     })
