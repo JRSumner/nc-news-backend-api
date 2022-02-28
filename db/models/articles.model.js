@@ -40,7 +40,7 @@ exports.updateVotes = (votes, id) => {
     });
 };
 
-exports.fetchArticles = (id, sort_by) => {
+exports.fetchArticles = (sort_by = "created_at") => {
   const validSortBys = ["created_at"];
 
   if (!validSortBys.includes(sort_by) && sort_by !== undefined) {
@@ -83,5 +83,17 @@ exports.fetchArticleComments = (id) => {
           msg: "no article matching that id",
         });
       return response.rows;
+    });
+};
+
+exports.addComment = (comment, username, id) => {
+  return db
+    .query(
+      `INSERT INTO comments (body, votes, author, article_id) VALUES ($1, 0, $2, $3) RETURNING *;`,
+      [comment, username, id],
+      console.log("hello")
+    )
+    .then((response) => {
+      console.log("hello in here");
     });
 };

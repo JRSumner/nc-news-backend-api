@@ -320,3 +320,20 @@ describe("GET: /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+// describe.only("POST: /api/articles/:article_id/comments", () => {
+//   test("should ", () => {
+//     const postedData = {
+//       body: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+//       username: "username123",
+//     };
+
+//     return request(app)
+//       .post("/api/articles/1/comments")
+//       .send(postedData)
+//       .expect(200)
+//       .then((response) => {
+//         expect(response.body).toEqual({ this: "thing here" });
+//       });
+//   });
+// });
