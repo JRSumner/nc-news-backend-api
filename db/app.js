@@ -3,11 +3,14 @@ const {
   patchVotes,
   getArticleById,
   getArticles,
-  getArticleComments,
-  postComment,
 } = require("./controllers/articles.controller");
 const { getTopics } = require("./controllers/topics.controller");
 const { getUsers } = require("./controllers/users.controller");
+const {
+  postComment,
+  getArticleComments,
+  deleteComment,
+} = require("./controllers/comments.controller");
 const { handlesBadPath, handlesCustomErrors } = require("./error");
 const app = express();
 
@@ -26,6 +29,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.all("/*", handlesBadPath);
 

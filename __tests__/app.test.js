@@ -295,9 +295,9 @@ describe("GET: /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test.only("status 200: responds with an array of article objects filtered by topic", () => {
+  test.skip("status 200: responds with an array of article objects filtered by topic", () => {
     return request(app)
-      .get("/api/articles?topic=cats")
+      .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body: articles }) => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
@@ -386,6 +386,42 @@ describe("POST: /api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send(testComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
+      });
+  });
+});
+
+describe("DELETE: /api/comments/comment_id", () => {
+  test("status 200: responds with a comment object containing the deleted comments details", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body: expect.any(String),
+            article_id: 9,
+            author: "butter_bridge",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status 404: when passed valid but non-existent id, responds with 'no comment matching that id'", () => {
+    return request(app)
+      .delete("/api/comments/1337")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no comment matching that id");
+      });
+  });
+  test("status 400: when passed valid but non-existent id, responds with 'bad request'", () => {
+    return request(app)
+      .delete("/api/comments/invalid-request")
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toEqual("bad request");
