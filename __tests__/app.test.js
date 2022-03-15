@@ -392,3 +392,23 @@ describe("POST: /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("DELETE: /api/comments/comment_id", () => {
+  test("status 200: responds with a comment object containing the deleted comments details", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: 1,
+            body: expect.any(String),
+            article_id: 9,
+            author: "butter_bridge",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+});
