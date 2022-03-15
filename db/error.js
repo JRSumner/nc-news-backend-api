@@ -11,3 +11,9 @@ exports.handlesCustomErrors = (err, req, res, next) => {
     res.status(err.status).send({ msg: err.msg });
   }
 };
+
+exports.handlesSqlError = (err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(400).send({ msg: "bad request" });
+  }
+};

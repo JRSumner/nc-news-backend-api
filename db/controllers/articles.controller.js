@@ -32,7 +32,9 @@ exports.patchVotes = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
   const sort_by = req.query.sort_by;
-  fetchArticles(sort_by)
+  const order = req.query.order;
+  const topic = req.query.topic;
+  fetchArticles(sort_by, order, topic)
     .then((response) => {
       res.status(200).send(response);
     })
@@ -52,11 +54,12 @@ exports.getArticleComments = (req, res, next) => {
     });
 };
 
+//Move to comment component
 exports.postComment = (req, res, next) => {
   const comment = req.body.body;
   const username = req.body.username;
   const id = req.params.article_id;
-  addComment(username, id)
+  addComment(comment, username, id)
     .then((response) => {
       res.status(200).send(response);
     })

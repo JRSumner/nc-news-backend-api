@@ -245,7 +245,7 @@ describe("GET: /api/articles", () => {
   });
   test("status 400: when passed invalid sort_by, responds with 'bad request'", () => {
     return request(app)
-      .get("/api/articles/?sort_by=INVALID_REQUEST")
+      .get("/api/articles?sort_by=INVALID")
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toEqual("bad request");
@@ -269,6 +269,38 @@ describe("GET: /api/articles", () => {
             })
           );
         });
+      });
+  });
+  test("status 200: responds with an array of article objects orders by descending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at&&order=DESC")
+      .expect(200)
+      .then(({ body: articles }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("status 200: responds with an array of article objects orders by ascending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at&&order=ASC")
+      .expect(200)
+      .then(({ body: articles }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: false });
+      });
+  });
+  test("status 200: responds with an array of article objects defaults to descending when order isn't specified", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then(({ body: articles }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test.only("status 200: responds with an array of article objects filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: articles }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -321,19 +353,42 @@ describe("GET: /api/articles/:article_id/comments", () => {
   });
 });
 
-// describe.only("POST: /api/articles/:article_id/comments", () => {
-//   test("should ", () => {
-//     const postedData = {
-//       body: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-//       username: "username123",
-//     };
+describe("POST: /api/articles/:article_id/comments", () => {
+  test("status 200: responds with a comment object that contains the expected comment details", () => {
+    const testComment = {
+      body: "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+      username: "icellusedkars",
+    };
 
-//     return request(app)
-//       .post("/api/articles/1/comments")
-//       .send(postedData)
-//       .expect(200)
-//       .then((response) => {
-//         expect(response.body).toEqual({ this: "thing here" });
-//       });
-//   });
-// });
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(testComment)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status 400: responds with 'bad request' when a user tries to post and empty comment", () => {
+    const testComment = {
+      body: "",
+      username: "icellusedkars",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(testComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
+      });
+  });
+});
