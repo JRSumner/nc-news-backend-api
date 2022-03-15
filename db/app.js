@@ -3,11 +3,13 @@ const {
   patchVotes,
   getArticleById,
   getArticles,
-  getArticleComments,
-  postComment,
 } = require("./controllers/articles.controller");
 const { getTopics } = require("./controllers/topics.controller");
 const { getUsers } = require("./controllers/users.controller");
+const {
+  postComment,
+  getArticleComments,
+} = require("./controllers/comments.controller");
 const { handlesBadPath, handlesCustomErrors } = require("./error");
 const app = express();
 

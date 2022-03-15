@@ -3,8 +3,6 @@ const {
   updateVotes,
   fetchArticles,
   fetchArticleById,
-  fetchArticleComments,
-  addComment,
 } = require("../models/articles.model.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -35,31 +33,6 @@ exports.getArticles = (req, res, next) => {
   const order = req.query.order;
   const topic = req.query.topic;
   fetchArticles(sort_by, order, topic)
-    .then((response) => {
-      res.status(200).send(response);
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-
-exports.getArticleComments = (req, res, next) => {
-  const id = req.params.article_id;
-  fetchArticleComments(id)
-    .then((response) => {
-      res.status(200).send(response);
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-
-//Move to comment component
-exports.postComment = (req, res, next) => {
-  const comment = req.body.body;
-  const username = req.body.username;
-  const id = req.params.article_id;
-  addComment(comment, username, id)
     .then((response) => {
       res.status(200).send(response);
     })
