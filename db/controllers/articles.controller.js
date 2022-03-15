@@ -1,8 +1,10 @@
+const { response } = require("../app.js");
 const {
   updateVotes,
   fetchArticles,
   fetchArticleById,
   fetchArticleComments,
+  addComment,
 } = require("../models/articles.model.js");
 
 exports.getArticleById = (req, res, next) => {
@@ -29,9 +31,10 @@ exports.patchVotes = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const id = req.params.article_id;
   const sort_by = req.query.sort_by;
-  fetchArticles(id, sort_by)
+  const order = req.query.order;
+  const topic = req.query.topic;
+  fetchArticles(sort_by, order, topic)
     .then((response) => {
       res.status(200).send(response);
     })
@@ -43,6 +46,20 @@ exports.getArticles = (req, res, next) => {
 exports.getArticleComments = (req, res, next) => {
   const id = req.params.article_id;
   fetchArticleComments(id)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//Move to comment component
+exports.postComment = (req, res, next) => {
+  const comment = req.body.body;
+  const username = req.body.username;
+  const id = req.params.article_id;
+  addComment(comment, username, id)
     .then((response) => {
       res.status(200).send(response);
     })

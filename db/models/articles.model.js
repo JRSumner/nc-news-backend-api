@@ -40,36 +40,25 @@ exports.updateVotes = (votes, id) => {
     });
 };
 
-exports.fetchArticles = (id, sort_by) => {
+exports.fetchArticles = (sort_by = "created_at", order = "DESC") => {
   const validSortBys = ["created_at"];
-
-  if (!validSortBys.includes(sort_by) && sort_by !== undefined) {
+  if (!validSortBys.includes(sort_by))
     return Promise.reject({ status: 400, msg: "bad request" });
-  }
 
-  if (sort_by === undefined) {
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles;`
-      )
-      .then((response) => {
-        return response.rows;
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } else {
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles ORDER BY ${sort_by} ASC;`
-      )
-      .then((response) => {
-        return response.rows;
-      })
-      .catch((err) => {
-        next(err);
-      });
-  }
+  const validOrder = ["ASC", "DESC"];
+  if (!validOrder.includes(order))
+    return Promise.reject({ status: 400, msg: "bad request" });
+
+  return db
+    .query(
+      `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
+    )
+    .then((response) => {
+      return response.rows;
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.fetchArticleComments = (id) => {
@@ -83,5 +72,18 @@ exports.fetchArticleComments = (id) => {
           msg: "no article matching that id",
         });
       return response.rows;
+    });
+};
+
+exports.addComment = (comment, username, id) => {
+  if (comment === "")
+    return Promise.reject({ status: 400, msg: "bad request" });
+  return db
+    .query(
+      `INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [comment, username, id]
+    )
+    .then((response) => {
+      return { comment: response.rows[0] };
     });
 };

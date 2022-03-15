@@ -4,6 +4,7 @@ const {
   getArticleById,
   getArticles,
   getArticleComments,
+  postComment,
 } = require("./controllers/articles.controller");
 const { getTopics } = require("./controllers/topics.controller");
 const { getUsers } = require("./controllers/users.controller");
@@ -23,6 +24,8 @@ app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postComment);
 
 app.all("/*", handlesBadPath);
 
