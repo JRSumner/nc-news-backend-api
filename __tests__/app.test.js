@@ -411,4 +411,20 @@ describe("DELETE: /api/comments/comment_id", () => {
         );
       });
   });
+  test("status 404: when passed valid but non-existent id, responds with 'no comment matching that id'", () => {
+    return request(app)
+      .delete("/api/comments/1337")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no comment matching that id");
+      });
+  });
+  test("status 400: when passed valid but non-existent id, responds with 'bad request'", () => {
+    return request(app)
+      .delete("/api/comments/invalid-request")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
+      });
+  });
 });

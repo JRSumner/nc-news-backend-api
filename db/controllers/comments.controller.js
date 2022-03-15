@@ -30,7 +30,11 @@ exports.postComment = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   const id = req.params.comment_id;
-  removeComment(id).then((response) => {
-    res.status(200).send(response);
-  });
+  removeComment(id)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
