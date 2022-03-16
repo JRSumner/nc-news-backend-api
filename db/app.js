@@ -12,6 +12,7 @@ const {
   deleteComment,
 } = require("./controllers/comments.controller");
 const { handlesBadPath, handlesCustomErrors } = require("./error");
+const { getEndpoints } = require("./controllers/endpoints.contoller");
 const app = express();
 
 app.use(express.json());
@@ -31,6 +32,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api", getEndpoints);
 
 app.all("/*", handlesBadPath);
 
