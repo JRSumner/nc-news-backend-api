@@ -428,3 +428,14 @@ describe("DELETE: /api/comments/comment_id", () => {
       });
   });
 });
+
+// describe.only("GET: /api", () => {
+//   test("should ", () => {
+//     return request(app)
+//       .get("/api")
+//       .expect(200)
+//       .then((res) => {
+//         expect(1).toEqual(1);
+//       });
+//   });
+// });
