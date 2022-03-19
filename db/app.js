@@ -10,6 +10,7 @@ const {
   postComment,
   getArticleComments,
   deleteComment,
+  patchComment,
 } = require("./controllers/comments.controller");
 const { handlesBadPath, handlesCustomErrors } = require("./error");
 const { getEndpoints } = require("./controllers/endpoints.contoller");
@@ -36,6 +37,8 @@ app.delete("/api/comments/:comment_id", deleteComment);
 app.get("/api/users/:username", getSingleUser);
 
 app.get("/api", getEndpoints);
+
+app.patch("/api/comments/:comment_id", patchComment);
 
 app.all("/*", handlesBadPath);
 

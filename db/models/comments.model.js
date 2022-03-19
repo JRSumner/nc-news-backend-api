@@ -40,3 +40,21 @@ exports.removeComment = (id) => {
       return { comment: rows[0] };
     });
 };
+
+exports.voteOnComment = (votes, id) => {
+  if (isNaN(id) || isNaN(votes))
+    return Promise.reject({ status: 400, msg: "bad request" });
+  return db
+    .query(
+      `UPDATE comments SET votes = $1 WHERE comment_id = $2 RETURNING *;`,
+      [votes, id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({
+          status: 404,
+          msg: "no comment matching that id",
+        });
+      return { comment: rows[0] };
+    });
+};

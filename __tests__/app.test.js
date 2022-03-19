@@ -486,3 +486,65 @@ describe("GET: /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH: /api/comments/:comment_id", () => {
+  test("status 200: returns a comment object with the votes increased by the numOfVotes", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status 200: checks the votes property on the comment object has been incremented correctly", () => {
+    const numOfVotes = { votes: 100 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toEqual(100);
+      });
+  });
+  test("status 200: checks the votes property on the comment object has been decremented correctly", () => {
+    const numOfVotes = { votes: -1 };
+    return request(app)
+      .patch("/api/comments/2")
+      .send(numOfVotes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toEqual(-1);
+      });
+  });
+  test("status 400: returns an error if passed an invalid vote property", () => {
+    const numOfVotes = { votes: "Not a number" };
+    return request(app)
+      .patch("/api/comments/2")
+      .send(numOfVotes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
+      });
+  });
+  test("status 404: returns an error if passed an valid but none existent comment_id", () => {
+    const numOfVotes = { votes: 1 };
+    return request(app)
+      .patch("/api/comments/1337")
+      .send(numOfVotes)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no comment matching that id");
+      });
+  });
+});
