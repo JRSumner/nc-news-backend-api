@@ -23,5 +23,100 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object for the specified article id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": "Number",
+        "title": "String",
+        "body": "String",
+        "topic": "String",
+        "author": "String",
+        "votes": "Number",
+        "created_at": "String",
+        "comment_count": "String"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "when passed a valid request serves an article object with the patched request",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 1 },
+    "exampleResponse": {
+      "article": {
+        "article_id": "Number",
+        "title": "String",
+        "body": "String",
+        "topic": "String",
+        "author": "String",
+        "votes": "Number",
+        "created_at": "String",
+        "comment_count": "String"
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves the comments for the specified article",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": "Number",
+          "body": "String",
+          "article_id": "Number",
+          "author": "String",
+          "votes": "Number",
+          "created_at": "String"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves a comment object with the details of the posted request",
+    "queries": [],
+    "exampleRequest": { "body": "String", "username": "String" },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": "Number",
+        "body": "String",
+        "article_id": "Number",
+        "author": "String",
+        "votes": "Number",
+        "created_at": "String"
+      }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves a comment object including the posted vote",
+    "queries": [],
+    "exampleRequest": { "inc_votes": 1 },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": "Number",
+        "body": "String",
+        "article_id": "Number",
+        "author": "String",
+        "votes": "Number",
+        "created_at": "String"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment when a comment id is specified",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET /api/users/:username": {
+    "description": "serves a user object",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "String",
+        "name": "String",
+        "avatar_url": "String"
+      }
+    }
   }
 }
