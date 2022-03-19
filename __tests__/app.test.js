@@ -24,7 +24,7 @@ describe("Global tests", () => {
         });
     });
     describe("PATCH requests", () => {
-      test("status 404: responds with a path not found message", () => {
+      test.skip("status 404: responds with a path not found message", () => {
         const data = { votes: 1 };
         return request(app)
           .patch("/*")
