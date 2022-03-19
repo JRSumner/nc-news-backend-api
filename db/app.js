@@ -40,7 +40,7 @@ app.get("/api", getEndpoints);
 
 app.patch("/api/comments/:comment_id", patchComment);
 
-app.all("/*", handlesBadPath);
+// app.all("/*", handlesBadPath);
 
 app.use(handlesCustomErrors);
 
