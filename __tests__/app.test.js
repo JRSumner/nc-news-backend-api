@@ -15,7 +15,7 @@ beforeEach(() => seed(data));
 
 describe("Global tests", () => {
   describe("GET requests", () => {
-    test.skip("status 404: responds with a path not found message", () => {
+    test("status 404: responds with a path not found message", () => {
       return request(app)
         .get("/*")
         .expect(404)
@@ -24,7 +24,7 @@ describe("Global tests", () => {
         });
     });
     describe("PATCH requests", () => {
-      test.skip("status 404: responds with a path not found message", () => {
+      test("status 404: responds with a path not found message", () => {
         const data = { votes: 1 };
         return request(app)
           .patch("/*")
