@@ -1,5 +1,5 @@
 exports.handlesBadPath = (req, res) => {
-  res.status(404).send({ message: "path not found" });
+  res.status(404).send({ message: "path not found :O" });
 };
 
 exports.handlesBadRequest = (err, req, res, next) => {

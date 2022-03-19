@@ -15,7 +15,7 @@ beforeEach(() => seed(data));
 
 describe("Global tests", () => {
   describe("GET requests", () => {
-    test("status 404: responds with a path not found message", () => {
+    test.skip("status 404: responds with a path not found message", () => {
       return request(app)
         .get("/*")
         .expect(404)
