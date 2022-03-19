@@ -5,6 +5,7 @@ const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
 const { response, resource } = require("../db/app.js");
 const res = require("express/lib/response");
+const req = require("express/lib/request");
 
 afterAll(() => {
   return db.end();
@@ -449,6 +450,39 @@ describe("GET: /api", () => {
             "GET /api/users/:username": expect.any(Object),
           })
         );
+      });
+  });
+});
+
+describe("GET: /api/users/:username", () => {
+  test("status 200: returns a user object with username, avatar_url and name properties", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status 404: returns an error when passed a valid but none existent username", () => {
+    return request(app)
+      .get("/api/users/validButNoneExistentUserName")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no user matching that id");
+      });
+  });
+  test("status 400: returns an error when passed an in-valid username", () => {
+    return request(app)
+      .get("/api/users/$$$")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
       });
   });
 });

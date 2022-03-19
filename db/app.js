@@ -5,7 +5,7 @@ const {
   getArticles,
 } = require("./controllers/articles.controller");
 const { getTopics } = require("./controllers/topics.controller");
-const { getUsers } = require("./controllers/users.controller");
+const { getUsers, getSingleUser } = require("./controllers/users.controller");
 const {
   postComment,
   getArticleComments,
@@ -32,6 +32,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users/:username", getSingleUser);
 
 app.get("/api", getEndpoints);
 
