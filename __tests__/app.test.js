@@ -59,13 +59,13 @@ describe("GET: /api/topics", () => {
   });
 });
 
-describe("GET: /api/articles/:article_id", () => {
+describe.only("GET: /api/articles/:article_id", () => {
   test("status 200: responds with an articles object with the following properties author (which is username), title, article_id, body, topic, created_at and votes", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toEqual(
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual(
           expect.objectContaining({
             article_id: expect.any(Number),
             title: expect.any(String),
@@ -82,24 +82,24 @@ describe("GET: /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1337")
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toEqual("no article matching that id");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no article matching that id");
       });
   });
   test("status 400: when passed invalid id, responds with 'bad request'", () => {
     return request(app)
       .get("/api/articles/invalid-id")
       .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toEqual("bad request");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
       });
   });
   test("status 200: responds with an article object which will include a 'comment_count' property", () => {
     return request(app)
       .get("/api/articles/5")
       .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toEqual(
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual(
           expect.objectContaining({
             article_id: 5,
             title: "UNCOVERED: catspiracy to bring down democracy",
