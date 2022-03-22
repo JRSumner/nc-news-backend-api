@@ -296,9 +296,9 @@ describe("GET: /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test.skip("status 200: responds with an array of article objects filtered by topic", () => {
+  test("status 200: responds with an array of article objects filtered by topic", () => {
     return request(app)
-      .get("/api/articles?topic=mitch")
+      .get("/api/articles?topic=cats")
       .expect(200)
       .then(({ body: articles }) => {
         expect(articles).toBeSortedBy("created_at", { descending: true });

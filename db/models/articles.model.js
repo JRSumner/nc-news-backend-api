@@ -46,17 +46,16 @@ exports.fetchArticles = (
   topic = null
 ) => {
   const validSortBys = ["created_at"];
-  if (!validSortBys.includes(sort_by))
-    return Promise.reject({ status: 400, msg: "bad request" });
-
   const validOrder = ["ASC", "DESC"];
-  if (!validOrder.includes(order))
+  if (!validSortBys.includes(sort_by) || !validOrder.includes(order))
     return Promise.reject({ status: 400, msg: "bad request" });
 
   if (topic === null) {
     return db
       .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
+        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
+         FROM comments WHERE articles.article_id = comments.article_id)
+         AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
       )
       .then((response) => {
         return response.rows;
@@ -68,7 +67,11 @@ exports.fetchArticles = (
     console.log(topic);
     return db
       .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id AND articles.topic = ${topic}) AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
+        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
+         FROM comments WHERE articles.article_id = comments.article_id)
+         AS comment_count FROM articles WHERE topic = $1
+         ORDER BY ${sort_by} ${order};`,
+        [topic]
       )
       .then((response) => {
         console.log(response.rows);
