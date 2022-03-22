@@ -43,11 +43,8 @@ describe("GET: /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then((response) => {
-        const topicsArray = response.body.topics;
-        expect(topicsArray.length).toBe(3);
-
-        topicsArray.forEach((topic) => {
+      .then(({ body: { topics } }) => {
+        topics.forEach((topic) => {
           expect(topic).toEqual(
             expect.objectContaining({
               slug: expect.any(String),
@@ -306,7 +303,7 @@ describe("GET: /api/articles", () => {
   });
 });
 
-describe.only("GET: /api/articles/:article_id/comments", () => {
+describe("GET: /api/articles/:article_id/comments", () => {
   test("Status 200: responds an array of comments for the given article_id", () => {
     return request(app)
       .get("/api/articles/5/comments")
