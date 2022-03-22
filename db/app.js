@@ -13,7 +13,7 @@ const {
   patchComment,
 } = require("./controllers/comments.controller");
 const { handlesBadPath, handlesCustomErrors } = require("./error");
-const { getEndpoints } = require("./controllers/endpoints.contoller");
+const { getEndpoints } = require("./controllers/endpoints.controller");
 const app = express();
 
 app.use(express.json());

@@ -19,8 +19,8 @@ describe("Global tests", () => {
       return request(app)
         .get("/*")
         .expect(404)
-        .then((response) => {
-          expect(response.body.message).toEqual("path not found");
+        .then(({ body: message }) => {
+          expect(message).toEqual({ message: "path not found" });
         });
     });
     describe("PATCH requests", () => {
@@ -30,8 +30,8 @@ describe("Global tests", () => {
           .patch("/*")
           .expect(404)
           .send(data)
-          .then((response) => {
-            expect(response.body.message).toEqual("path not found");
+          .then(({ body: message }) => {
+            expect(message).toEqual({ message: "path not found" });
           });
       });
     });
