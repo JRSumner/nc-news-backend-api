@@ -11,9 +11,9 @@ The API and all of its endpoints have been fully tested using Jest and Supertest
 node -v
 ```
 
-If you do not have the correct version of node click ![here](https://nodejs.org/en/download/) to install the latest version.
+If you do not have the correct version of node click [here](https://nodejs.org/en/download/) to install the latest version.
 
-Then please ensure you have PSQL v12.9 or high installed, if you do not have the correct version of PSQL installed click ![here](https://www.postgresql.org/download/) to install the latest version.
+Then please ensure you have PSQL v12.9 or high installed, if you do not have the correct version of PSQL installed click [here](https://www.postgresql.org/download/) to install the latest version.
 
 To now run the tests please clone the project, cd into the repo, seed the database and install the dependencies:
 
@@ -44,7 +44,7 @@ npm test
 
 ## Built With
 
-- ![Express](https://expressjs.com/) - Web framework for Node.js
-- ![PSQL](https://www.postgresql.org/) - Open source relational database
-- ![JEST](https://jestjs.io/) - JavaScript testing framework
-- ![Supertest](https://www.npmjs.com/package/supertest) - HTTP testing framework
+- [Express](https://expressjs.com/) - Web framework for Node.js
+- [PSQL](https://www.postgresql.org/) - Open source relational database
+- [JEST](https://jestjs.io/) - JavaScript testing framework
+- [Supertest](https://www.npmjs.com/package/supertest) - HTTP testing framework
