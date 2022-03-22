@@ -115,7 +115,7 @@ describe("GET: /api/articles/:article_id", () => {
   });
 });
 
-describe.only("PATCH: /api/articles/:article_id", () => {
+describe("PATCH: /api/articles/:article_id", () => {
   test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a positive number of votes", () => {
     const numOfVotes = { votes: 1 };
     return request(app)
@@ -205,7 +205,7 @@ describe("GET: /api/users", () => {
   });
 });
 
-describe("GET: /api/articles", () => {
+describe.only("GET: /api/articles", () => {
   test("status 200: responds with an array of article objects", () => {
     return request(app)
       .get("/api/articles")

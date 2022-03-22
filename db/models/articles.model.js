@@ -42,46 +42,24 @@ exports.updateVotes = (votes, id) => {
     });
 };
 
-exports.fetchArticles = (
-  sort_by = "created_at",
-  order = "DESC",
-  topic = null
-) => {
+exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
   const validSortBys = ["created_at"];
   const validOrder = ["ASC", "DESC"];
   if (!validSortBys.includes(sort_by) || !validOrder.includes(order))
     return Promise.reject({ status: 400, msg: "bad request" });
 
-  if (topic === null) {
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
-         FROM comments WHERE articles.article_id = comments.article_id)
-         AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
-      )
-      .then((response) => {
-        return response.rows;
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } else {
-    console.log(topic);
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
+  return db
+    .query(
+      `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
          FROM comments WHERE articles.article_id = comments.article_id)
          AS comment_count FROM articles WHERE topic = $1
          ORDER BY ${sort_by} ${order};`,
-        [topic]
-      )
-      .then((response) => {
-        console.log(response.rows);
-        return response.rows;
-      })
-      .catch((err) => {
-        console.log(err);
-        next(err);
-      });
-  }
+      [topic]
+    )
+    .then(({ rows }) => {
+      return rows;
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
