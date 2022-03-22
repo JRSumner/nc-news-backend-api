@@ -59,7 +59,7 @@ describe("GET: /api/topics", () => {
   });
 });
 
-describe.only("GET: /api/articles/:article_id", () => {
+describe("GET: /api/articles/:article_id", () => {
   test("status 200: responds with an articles object with the following properties author (which is username), title, article_id, body, topic, created_at and votes", () => {
     return request(app)
       .get("/api/articles/1")
@@ -115,7 +115,7 @@ describe.only("GET: /api/articles/:article_id", () => {
   });
 });
 
-describe("PATCH: /api/articles/:article_id", () => {
+describe.only("PATCH: /api/articles/:article_id", () => {
   test("status 200: responds with an object with the inc_votes prop set to the amount of votes when passed a positive number of votes", () => {
     const numOfVotes = { votes: 1 };
     return request(app)

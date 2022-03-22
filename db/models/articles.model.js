@@ -31,14 +31,14 @@ exports.updateVotes = (votes, id) => {
       `UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *;`,
       [votes, id]
     )
-    .then((response) => {
-      if (response.rows.length === 0)
+    .then(({ rows }) => {
+      if (rows.length === 0)
         return Promise.reject({
           status: 404,
           msg: "no article matching that id",
         });
-      const result = response.rows[0];
-      return result;
+      const votedArticle = rows[0];
+      return votedArticle;
     });
 };
 
