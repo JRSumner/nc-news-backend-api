@@ -5,13 +5,13 @@ exports.fetchArticleComments = (id) => {
 
   return db
     .query(`SELECT * FROM comments WHERE article_id = $1;`, [id])
-    .then(({ rows }) => {
-      if (rows.length === 0)
+    .then(({ rows: comments }) => {
+      if (comments.length === 0)
         return Promise.reject({
           status: 404,
           msg: "no article matching that id",
         });
-      return rows;
+      return comments;
     });
 };
 
@@ -24,8 +24,8 @@ exports.addComment = (comment, username, id) => {
       `INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;`,
       [comment, username, id]
     )
-    .then(({ rows }) => {
-      return { comment: rows[0] };
+    .then(({ rows: [comment] }) => {
+      return { comment };
     });
 };
 

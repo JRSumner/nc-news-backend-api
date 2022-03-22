@@ -31,14 +31,13 @@ exports.updateVotes = (votes, id) => {
       `UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *;`,
       [votes, id]
     )
-    .then(({ rows }) => {
-      if (rows.length === 0)
+    .then(({ rows: votedArticle }) => {
+      if (votedArticle.length === 0)
         return Promise.reject({
           status: 404,
           msg: "no article matching that id",
         });
-      const votedArticle = rows[0];
-      return votedArticle;
+      return votedArticle[0];
     });
 };
 
@@ -56,8 +55,8 @@ exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
          ORDER BY ${sort_by} ${order};`,
       [topic]
     )
-    .then(({ rows }) => {
-      return rows;
+    .then(({ rows: articles }) => {
+      return articles;
     })
     .catch((err) => {
       next(err);
