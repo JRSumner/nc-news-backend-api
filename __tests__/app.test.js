@@ -3,9 +3,6 @@ const app = require("../db/app.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
-const { response, resource } = require("../db/app.js");
-const res = require("express/lib/response");
-const req = require("express/lib/request");
 
 afterAll(() => {
   return db.end();
@@ -19,8 +16,8 @@ describe("Global tests", () => {
       return request(app)
         .get("/*")
         .expect(404)
-        .then((response) => {
-          expect(response.body.message).toEqual("path not found");
+        .then(({ body: message }) => {
+          expect(message).toEqual({ message: "path not found" });
         });
     });
     describe("PATCH requests", () => {
@@ -30,8 +27,8 @@ describe("Global tests", () => {
           .patch("/*")
           .expect(404)
           .send(data)
-          .then((response) => {
-            expect(response.body.message).toEqual("path not found");
+          .then(({ body: message }) => {
+            expect(message).toEqual({ message: "path not found" });
           });
       });
     });
@@ -43,11 +40,8 @@ describe("GET: /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then((response) => {
-        const topicsArray = response.body.topics;
-        expect(topicsArray.length).toBe(3);
-
-        topicsArray.forEach((topic) => {
+      .then(({ body: { topics } }) => {
+        topics.forEach((topic) => {
           expect(topic).toEqual(
             expect.objectContaining({
               slug: expect.any(String),
@@ -64,8 +58,8 @@ describe("GET: /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toEqual(
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual(
           expect.objectContaining({
             article_id: expect.any(Number),
             title: expect.any(String),
@@ -82,24 +76,24 @@ describe("GET: /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1337")
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toEqual("no article matching that id");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no article matching that id");
       });
   });
   test("status 400: when passed invalid id, responds with 'bad request'", () => {
     return request(app)
       .get("/api/articles/invalid-id")
       .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toEqual("bad request");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
       });
   });
   test("status 200: responds with an article object which will include a 'comment_count' property", () => {
     return request(app)
       .get("/api/articles/5")
       .expect(200)
-      .then((response) => {
-        expect(response.body.articles).toEqual(
+      .then(({ body: { articles } }) => {
+        expect(articles).toEqual(
           expect.objectContaining({
             article_id: 5,
             title: "UNCOVERED: catspiracy to bring down democracy",
@@ -180,8 +174,8 @@ describe("PATCH: /api/articles/:article_id", () => {
       .patch("/api/articles/1337")
       .send(numOfVotes)
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toEqual("no article matching that id");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no article matching that id");
       });
   });
 });
@@ -248,8 +242,8 @@ describe("GET: /api/articles", () => {
     return request(app)
       .get("/api/articles?sort_by=INVALID")
       .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toEqual("bad request");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
       });
   });
   test("status 200: response with an array of article objects which will include a 'comment_count' property", () => {
@@ -296,9 +290,9 @@ describe("GET: /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test.skip("status 200: responds with an array of article objects filtered by topic", () => {
+  test("status 200: responds with an array of article objects filtered by topic", () => {
     return request(app)
-      .get("/api/articles?topic=mitch")
+      .get("/api/articles?topic=cats")
       .expect(200)
       .then(({ body: articles }) => {
         expect(articles).toBeSortedBy("created_at", { descending: true });

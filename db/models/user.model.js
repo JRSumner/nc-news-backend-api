@@ -1,9 +1,8 @@
-const { response } = require("../app.js");
 const db = require("../connection.js");
 
 exports.fetchUsers = () => {
-  return db.query(`SELECT * FROM users`).then((response) => {
-    return response.rows;
+  return db.query(`SELECT * FROM users`).then(({ rows: users }) => {
+    return users;
   });
 };
 

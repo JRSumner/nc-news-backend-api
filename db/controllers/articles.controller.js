@@ -1,4 +1,3 @@
-const { response } = require("../app.js");
 const {
   updateVotes,
   fetchArticles,
@@ -28,10 +27,11 @@ exports.patchVotes = (req, res, next) => {
     });
 };
 
-exports.getArticles = (req, res, next) => {
+exports.getArticles = async (req, res, next) => {
   const sort_by = req.query.sort_by;
   const order = req.query.order;
   const topic = req.query.topic;
+
   fetchArticles(sort_by, order, topic)
     .then((response) => {
       res.status(200).send(response);

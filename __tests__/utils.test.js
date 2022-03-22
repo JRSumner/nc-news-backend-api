@@ -5,14 +5,14 @@ const {
 } = require("../db/helpers/utils");
 
 describe("convertTimestampToDate", () => {
-  test.skip("returns a new object", () => {
+  test("returns a new object", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);
     expect(result).not.toBe(input);
     expect(result).toBeObject();
   });
-  test.skip("converts a created_at property to a date", () => {
+  test("converts a created_at property to a date", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);

@@ -5,12 +5,14 @@ exports.fetchArticleById = (id) => {
 
   return db
     .query(
-      `SELECT author, title, article_id, body, topic, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles WHERE article_id = $1`,
+      `SELECT author, title, article_id, body, topic, created_at, votes, 
+      (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id)
+      AS comment_count FROM articles WHERE article_id = $1`,
       [id]
     )
-    .then((response) => {
-      const article = { articles: response.rows[0] };
-      if (response.rows.length === 0)
+    .then(({ rows }) => {
+      const article = { articles: rows[0] };
+      if (rows.length === 0)
         return Promise.reject({
           status: 404,
           msg: "no article matching that id",
@@ -29,54 +31,34 @@ exports.updateVotes = (votes, id) => {
       `UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *;`,
       [votes, id]
     )
-    .then((response) => {
-      if (response.rows.length === 0)
+    .then(({ rows: votedArticle }) => {
+      if (votedArticle.length === 0)
         return Promise.reject({
           status: 404,
           msg: "no article matching that id",
         });
-      const result = response.rows[0];
-      return result;
+      return votedArticle[0];
     });
 };
 
-exports.fetchArticles = (
-  sort_by = "created_at",
-  order = "DESC",
-  topic = null
-) => {
+exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
   const validSortBys = ["created_at"];
-  if (!validSortBys.includes(sort_by))
-    return Promise.reject({ status: 400, msg: "bad request" });
-
   const validOrder = ["ASC", "DESC"];
-  if (!validOrder.includes(order))
+  if (!validSortBys.includes(sort_by) || !validOrder.includes(order))
     return Promise.reject({ status: 400, msg: "bad request" });
 
-  if (topic === null) {
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id) AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
-      )
-      .then((response) => {
-        return response.rows;
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } else {
-    console.log(topic);
-    return db
-      .query(
-        `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*) FROM comments WHERE articles.article_id = comments.article_id AND articles.topic = ${topic}) AS comment_count FROM articles ORDER BY ${sort_by} ${order};`
-      )
-      .then((response) => {
-        console.log(response.rows);
-        return response.rows;
-      })
-      .catch((err) => {
-        console.log(err);
-        next(err);
-      });
-  }
+  return db
+    .query(
+      `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
+         FROM comments WHERE articles.article_id = comments.article_id)
+         AS comment_count FROM articles WHERE topic = $1
+         ORDER BY ${sort_by} ${order};`,
+      [topic]
+    )
+    .then(({ rows: articles }) => {
+      return articles;
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
