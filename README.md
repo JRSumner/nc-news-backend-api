@@ -1,7 +1,7 @@
 # Northcoders News API
 
 Northcoders News API is a RESTful api which has been created using Node.js, Express.js, PSQL.
-The database has been deployed through Heroku, you can visit the API ![here](https://nc-news-backend-api.herokuapp.com/api).
+The database has been deployed through Heroku, you can visit the API [here](https://nc-news-backend-api.herokuapp.com/api).
 
 ## Getting Started
 
