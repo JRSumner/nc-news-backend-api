@@ -180,8 +180,8 @@ describe.only("PATCH: /api/articles/:article_id", () => {
       .patch("/api/articles/1337")
       .send(numOfVotes)
       .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toEqual("no article matching that id");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("no article matching that id");
       });
   });
 });
@@ -248,8 +248,8 @@ describe("GET: /api/articles", () => {
     return request(app)
       .get("/api/articles?sort_by=INVALID")
       .expect(400)
-      .then((response) => {
-        expect(response.body.msg).toEqual("bad request");
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("bad request");
       });
   });
   test("status 200: response with an array of article objects which will include a 'comment_count' property", () => {
