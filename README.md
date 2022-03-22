@@ -35,6 +35,7 @@ npm install
 ```
 
 You should also create the following files in the root directory:
+
 `.env.test (contents: PGDATABASE=nc_news_test)`
 `.env.development (contents: PGDATABASE=nc_news)`
 
