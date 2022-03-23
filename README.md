@@ -37,7 +37,7 @@ npm run setup-dbs
 npm run seed
 ```
 
-Now you can run the tests by entering:
+You should now be able to run the tests by entering:
 
 ```
 npm test
