@@ -22,12 +22,6 @@ git clone https://github.com/JRSumner/nc-news-backend-api.git
 
 cd nc-news-backend-api
 
-npm run setup-dbs
-
-npm run seed-test
-
-npm run seed
-
 npm install
 ```
 
@@ -35,6 +29,13 @@ You should also create the following files in the root directory:
 
 `.env.test (contents: PGDATABASE=nc_news_test)`
 `.env.development (contents: PGDATABASE=nc_news)`
+
+Now you can run the following commands in the terminal:
+
+```
+npm run setup-dbs
+npm run seed
+```
 
 Now you can run the tests by entering:
 
