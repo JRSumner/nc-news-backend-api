@@ -1,4 +1,5 @@
 const db = require("../connection.js");
+const { fetchTopics } = require("./topics.model.js");
 
 exports.fetchArticleById = (id) => {
   if (isNaN(id)) return Promise.reject({ status: 400, msg: "bad request" });
@@ -41,19 +42,34 @@ exports.updateVotes = (votes, id) => {
     });
 };
 
-exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
+exports.fetchArticles = async (
+  sort_by = "created_at",
+  order = "DESC",
+  topic
+) => {
   const validSortBys = ["created_at"];
   const validOrder = ["ASC", "DESC"];
-  if (!validSortBys.includes(sort_by) || !validOrder.includes(order))
+
+  const fetchedTopics = await fetchTopics();
+  const validTopics = fetchedTopics.map((topic) => {
+    return topic.slug;
+  });
+  validTopics.push(undefined);
+  if (
+    !validSortBys.includes(sort_by) ||
+    !validOrder.includes(order) ||
+    !validTopics.includes(topic)
+  )
     return Promise.reject({ status: 400, msg: "bad request" });
+
+  const topicQuery = topic === undefined ? "" : `WHERE topic = '${topic}'`;
 
   return db
     .query(
       `SELECT article_id, title, topic, author, created_at, votes, (SELECT COUNT(*)
          FROM comments WHERE articles.article_id = comments.article_id)
-         AS comment_count FROM articles WHERE topic = $1
-         ORDER BY ${sort_by} ${order};`,
-      [topic]
+         AS comment_count FROM articles ${topicQuery}
+         ORDER BY ${sort_by} ${order};`
     )
     .then(({ rows: articles }) => {
       return articles;

@@ -224,7 +224,7 @@ describe("GET: /api/articles", () => {
       .get("/api/articles?sort_by=created_at")
       .expect(200)
       .then(({ body: articles }) => {
-        expect(articles).toBeSortedBy("created_at", { descending: false });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("status 200: checks the default sort order is descending when not passed a sort_by", () => {
@@ -232,7 +232,7 @@ describe("GET: /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: articles }) => {
-        expect(articles).toBeSortedBy("created_at", { descending: false });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("status 400: when passed invalid sort_by, responds with 'bad request'", () => {
@@ -289,11 +289,11 @@ describe("GET: /api/articles", () => {
   });
   test("status 200: responds with an array of article objects filtered by topic", () => {
     return request(app)
-      .get("/api/articles?topic=cats")
+      .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body: articles }) => {
         articles.forEach((article) => {
-          expect(article.topic).toEqual("cats");
+          expect(article.topic).toEqual("mitch");
         });
       });
   });
